@@ -1,0 +1,55 @@
+---
+title: "Checkpoint 2 Adrian Antonelli"
+format: html
+---
+```{r}
+#| output: false
+library(tidyverse)
+cases_month <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-06-24/cases_month.csv')
+
+cases_year <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-06-24/cases_year.csv')
+```
+
+# Which month typically has the most measles cases?
+### (Modified Data, no iterations or custom functions)
+
+```{r}
+Case_Ranking_By_Months <- cases_month |>
+  group_by(month) |>
+  summarise(total_measles = sum(
+    measles_total,
+    na.rm = TRUE)) |>
+  mutate(rank = rank(
+    -total_measles),
+    month = month.name[month]) |>
+  arrange(rank)
+
+Case_Ranking_By_Months
+```
+
+
+
+# Is there a relationship between rubella cases and measles cases?
+
+### (Existing Data, there is a custom function & Iteration)
+
+```{r}
+Corr_Measles_Rubella <- function(r) {
+  cases_year |>
+    filter(region == r) |>
+    summarise(
+      correlation = cor(
+        as.numeric(measles_total),
+        as.numeric(rubella_total),
+        use = "complete.obs")) |>
+    pull(correlation)}
+
+Region_Correlation <- cases_year |>
+  distinct(region) |>
+  mutate(
+    correlation = map_dbl(region, Corr_Measles_Rubella)
+    ) |>
+  arrange(desc(correlation))
+
+Region_Correlation
+```

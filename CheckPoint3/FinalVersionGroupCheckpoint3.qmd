@@ -283,42 +283,42 @@ After looking at the visualization we can see that between 2014-2016 the West Pa
 ### Do regions with higher MCV1 vaccination percentages have lower measles and rubella cases?
 
 ```{r}
-disease_summary <- complete_data |>
-  group_by(region, year) |>
-  summarise(
-    Measles = sum(yearly_measles_total, na.rm = TRUE),
-    Rubella = sum(yearly_rubella_total, na.rm = TRUE),
-    mcv1_coverage = mean(COVERAGE_MCV1, na.rm = TRUE),
-    .groups = "drop"
-  ) |> filter(!is.na(mcv1_coverage), year <= 2024)
+disease_ridges <- complete_data |>
+  filter(!is.na(COVERAGE_MCV1), year <= 2024,
+         yearly_measles_incidence_rate_per_1000000_total_population > 0) |>
+  select(region, year, country, COVERAGE_MCV1,
+         incidence = yearly_measles_incidence_rate_per_1000000_total_population) |>
+  mutate(mcv1_group = case_when(
+    COVERAGE_MCV1 < 75  ~ "Low (<75%)",
+    COVERAGE_MCV1 < 85  ~ "Medium (75-85%)",
+    COVERAGE_MCV1 >= 85 ~ "High (>85%)"
+  )) |>
+  mutate(mcv1_group = factor(mcv1_group, 
+    levels = c("Low (<75%)", "Medium (75-85%)", "High (>85%)")))
 
-disease_long_version <- disease_summary |>
-  pivot_longer(
-    cols = c(Measles, Rubella),
-    names_to = "disease",
-    values_to = "total")
-
-ggplot(disease_long_version, aes(x = year, y = total, color = mcv1_coverage, group = interaction(region, disease))) +
-  geom_line(linewidth = 0.9) +
-  geom_point(size = 1.5) +
-  facet_grid(disease ~ region, scales = "free_y") +
-  scale_color_gradient(
-    low  = "#2166ac",
-    high = "#8b1a0a",
-    name = "MCV1 vaccination (%)") +
-  scale_y_continuous(labels = comma) +
-  scale_x_continuous(breaks = c(2012, 2016, 2020, 2024)) +
-  labs(title = "Do regions with higher MCV1 vaccination percentages \nhave lower measles and rubella cases?",
-    subtitle = "Total cases by region 2012–2024 with ranging MCV1 vaccination percentage shown",
-    x = NULL,
-    y = "Total cases",
-    caption = "AFR = Africa  |  AMR = Americas  |\n EMR = E. Mediterranean  |  EUR = Europe  |\n  SEAR = SE Asia  |  WPR = W. Pacific |") +
+ggplot(disease_ridges, aes(x = incidence, y = region, fill = mcv1_group)) +
+  geom_density_ridges(alpha = 0.7, scale = 2) +
+  facet_wrap(~ mcv1_group, ncol = 1) +
+  scale_x_log10(labels = comma) +
+  scale_fill_manual(
+    values = c("Low (<75%)"      = "steelblue",
+               "Medium (75-85%)" = "purple",
+               "High (>85%)"     = "darkred"),
+    guide = "none") +
+  labs(
+    title = "Do regions with higher MCV1 vaccination percentages\nhave lower measles cases?",
+    subtitle = "Measles incidence distribution by region, grouped by MCV1 coverage level",
+    x = "Incidence rate per 1M population (log scale)",
+    y = NULL,
+    caption = "AFR = Africa, AMR = Americas, EMR = E. Mediterranean,
+EUR = Europe, SEAR = SE Asia, WPR = W. Pacific") +
   theme_minimal(base_size = 11) +
   theme(
     plot.title = element_text(face = "bold", size = 12),
-    plot.subtitle = element_text(size = 10),
+    plot.subtitle = element_text(size = 10, color = "gray40"),
     strip.text = element_text(face = "bold"),
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 6),legend.position  = "bottom")
+    legend.position = "none"
+  )
 ```
 
 ### Conclusion:

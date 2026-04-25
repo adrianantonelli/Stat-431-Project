@@ -1,0 +1,55 @@
+---
+title: "Checkpoint 4 Adrian"
+format: html
+---
+```{r}
+#| message: False
+library(tidyverse)
+library(forcats)
+library(scales)
+library(ggridges)
+```
+
+```{r}
+complete_data <- read.csv("complete_data.csv")
+
+disease_ridges <- complete_data |>
+  filter(!is.na(COVERAGE_MCV1), year <= 2024,
+         yearly_measles_incidence_rate_per_1000000_total_population > 0) |>
+  select(region, year, country, 
+         COVERAGE_MCV1,
+        yearly_measles_incidence_rate_per_1000000_total_population) |>
+  mutate(avg_mcv1 = mean(COVERAGE_MCV1), .by = region)
+
+ggplot(disease_ridges, 
+       aes(x = yearly_measles_incidence_rate_per_1000000_total_population,
+           y = region, fill = avg_mcv1)) +
+  geom_density_ridges(alpha = 0.8,scale = 1.5,
+                quantile_lines = TRUE, quantiles = 2) +
+  geom_text(
+    data = disease_ridges |> distinct(region, avg_mcv1),
+    aes(x = 1075, 
+        y = region,
+        label = paste0("MCV1: ", round(avg_mcv1), "%")),
+    vjust = -1.5, size = 3) +
+  scale_x_log10(
+    labels = comma,
+    breaks = c(0.1, 1, 10, 100, 1000),
+    minor_breaks = NULL) +
+  scale_fill_gradient(
+    low  = "dodgerblue",
+    high = "darkred",
+    name = "Avg MCV1 (%)") +
+  labs(
+    title = "Do regions with higher avg MCV1 vaccination percentages\nhave lower measles cases?",
+    subtitle = "Vertical line represents the median of the region.",
+    x = "Measles incidence rate per 1 million population",
+    y = NULL,
+    caption = "AFR = Africa  |  AMR = Americas  |\n EMR = E. Mediterranean  |  EUR = Europe  |\n  SEAR = SE Asia  |  WPR = W. Pacific |") +
+  theme_minimal() +
+  theme(
+    panel.grid.minor = element_blank(),
+    legend.position = "none",
+  )
+
+```

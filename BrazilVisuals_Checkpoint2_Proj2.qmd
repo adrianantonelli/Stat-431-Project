@@ -1,0 +1,57 @@
+---
+title: "Brazil Visuals For Project 2 Checkpoint 2"
+format: html
+---
+
+```{r}
+#| echo: false
+library(ggplot2)
+library(gganimate)
+library(dplyr)
+complete_data <- read.csv("complete_data.csv")
+
+Brazil_data <- read.csv("Brazil_Weather.csv")
+```
+
+```{r}
+Brazilian_cases <- complete_data %>%
+  filter(country == "Brazil") %>%
+  group_by(month) %>%
+  summarise(Value = sum(measles_total, na.rm = TRUE)) %>%
+  mutate(Percent = Value / sum(Value) * 100, 
+         dataset = "Annual Measles Case (%) by Month")
+
+weather <- Brazil_data %>%
+  mutate(month = 1:12, Val = Precipitation..mm., 
+         dataset = "Annual Precipitation (%) by Month") %>%
+  mutate(Percent = Val / sum(Val) * 100) %>%
+  select(month, Percent, dataset)
+
+combined_values <- bind_rows(Brazilian_cases, weather) %>%
+  group_by(dataset) %>%
+  mutate(fill_color = case_when(
+    Percent == max(Percent) ~ "High",
+    Percent == min(Percent) ~ "Low",
+    TRUE ~ "Normal")) %>%
+  ungroup()
+
+AnimatedGraph <- ggplot(combined_values, aes(x = month, y = Percent)) +
+  geom_line(aes(group = 1), color = "gray40") +
+  geom_point(aes(color = fill_color), size = 4) +
+  scale_color_manual(values = c("High" = "red", "Low" = "blue", "Normal" = "gray"),
+                    breaks = c("High", "Normal", "Low"),
+                    name = "") +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
+  scale_y_continuous(labels = function(x) paste0(round(x, 1), "%")) +
+  labs(
+    title = "{closest_state}",
+    subtitle = "Red = peak month | Blue = lowest month",
+    x = "Month",
+    y = "Percentage of Annual Total (%)"
+  ) +
+  transition_states(dataset) +
+  theme_bw()
+
+animate(AnimatedGraph, nframes = 100, fps = 10)
+
+```

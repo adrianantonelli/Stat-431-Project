@@ -35,23 +35,23 @@ combined_values <- bind_rows(Brazilian_cases, weather) %>%
     TRUE ~ "Normal")) %>%
   ungroup()
 
-AnimatedGraph <- ggplot(combined_values, aes(x = month, y = Percent)) +
+AnimatedGraph <- ggplot(combined_values, aes(x = month,
+                                          y = Percent)) +
   geom_line(aes(group = 1), color = "gray40") +
   geom_point(aes(color = fill_color), size = 4) +
-  scale_color_manual(values = c("High" = "red", "Low" = "blue", "Normal" = "gray"),
+  scale_color_manual(values = c("High" = "red", 
+                                "Low" = "blue", 
+                                "Normal" = "gray"),
                     breaks = c("High", "Normal", "Low"),
                     name = "") +
   scale_x_continuous(breaks = 1:12, labels = month.abb) +
   scale_y_continuous(labels = function(x) paste0(round(x, 1), "%")) +
-  labs(
-    title = "{closest_state}",
+  labs(title = "{closest_state}",
     subtitle = "Red = peak month | Blue = lowest month",
     x = "Month",
-    y = "Percentage of Annual Total (%)"
-  ) +
+    y = "Percentage of Annual Total (%)") +
   transition_states(dataset) +
   theme_bw()
 
 animate(AnimatedGraph, nframes = 100, fps = 10)
-
 ```

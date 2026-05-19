@@ -41,7 +41,7 @@ ggplot(disease_ridges,
     high = "darkred",
     name = "Avg MCV1 (%)") +
   labs(
-    title = "Do regions with higher avg MCV1 vaccination percentages\nhave lower measles cases?",
+    title = "Do regions with higher avgMCV1 vaccination percentages\nhave lower measles cases?",
     subtitle = "Vertical line represents the median of the region.",
     x = "Measles incidence rate per 1 million population",
     y = NULL,

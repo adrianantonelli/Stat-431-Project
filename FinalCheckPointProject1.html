@@ -136,63 +136,64 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">year_range =</span> <span class="fu">paste</span>(<span class="fu">min</span>(year), <span class="fu">max</span>(year), </span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">sep =</span> <span class="st">"–"</span>),</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">avg_mcv1_coverage =</span> <span class="fu">round</span>(<span class="fu">mean</span>(COVERAGE_MCV1, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">1</span>),</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">avg_incidence_per_1M =</span> <span class="fu">round</span>(</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>       <span class="fu">mean</span>(yearly_measles_incidence_rate_per_1000000_total_population,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">1</span>))</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>Regional_Summaries <span class="ot">&lt;-</span> country_year <span class="sc">|&gt;</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(region) <span class="sc">|&gt;</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(region) <span class="sc">|&gt;</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(Regional_Vaccination) <span class="sc">|&gt;</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(avg_incidence_per_1M)) <span class="sc">|&gt;</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Region"</span> <span class="ot">=</span> region,</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Countries"</span> <span class="ot">=</span> n_countries,</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Year Range"</span> <span class="ot">=</span> year_range,</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Avg MCV1 Coverage %"</span> <span class="ot">=</span> avg_mcv1_coverage,</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Avg Incidence per 1M"</span> <span class="ot">=</span> avg_incidence_per_1M</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">|&gt;</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Avg MCV1 Coverage %</span><span class="st">`</span><span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">`</span><span class="at">Avg MCV1 Coverage %</span><span class="st">`</span>, <span class="st">"%"</span>),</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Avg Incidence per 1M</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">formatC</span>(<span class="st">`</span><span class="at">Avg Incidence per 1M</span><span class="st">`</span>, <span class="at">format =</span> <span class="st">"f"</span>, <span class="at">digits =</span> <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average MCV1 Vaccination Coverage and Measles Incidence Rate by WHO Region years (2012–2024)"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"Regional Statistics"</span>,</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">Avg MCV1 Coverage %</span><span class="st">`</span>, <span class="st">`</span><span class="at">Avg Incidence per 1M</span><span class="st">`</span>)) <span class="sc">|&gt;</span>  <span class="fu">tab_options</span>(</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.font.weight =</span> <span class="st">"bold"</span>,</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.background.color =</span> <span class="st">"#2C7BB6"</span>,</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.background.color =</span> <span class="st">"#D9EAF7"</span>,</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">row.striping.background_color =</span> <span class="st">"#F0F7FF"</span>,</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">row.striping.include_table_body =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">weight =</span> <span class="st">"bold"</span>),</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_title</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#D9EAF7"</span>),</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_column_spanners</span>())</span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>Regional_Summaries</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">avg_mcv2_coverage =</span> <span class="fu">round</span>(<span class="fu">mean</span>(COVERAGE_MCV2, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">1</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">avg_incidence_per_1M =</span> <span class="fu">round</span>(</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>       <span class="fu">mean</span>(yearly_measles_incidence_rate_per_1000000_total_population,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">1</span>))</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>Regional_Summaries <span class="ot">&lt;-</span> country_year <span class="sc">|&gt;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(region) <span class="sc">|&gt;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(region) <span class="sc">|&gt;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(Regional_Vaccination) <span class="sc">|&gt;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(avg_incidence_per_1M)) <span class="sc">|&gt;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Region"</span> <span class="ot">=</span> region,</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Countries"</span> <span class="ot">=</span> n_countries,</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Year Range"</span> <span class="ot">=</span> year_range,</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Avg MCV1 Coverage %"</span> <span class="ot">=</span> avg_mcv1_coverage,</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Avg MCV2 Coverage %"</span> <span class="ot">=</span> avg_mcv2_coverage,</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Avg Incidence per 1M"</span> <span class="ot">=</span> avg_incidence_per_1M)<span class="sc">|&gt;</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Avg MCV1 Coverage %</span><span class="st">`</span><span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">`</span><span class="at">Avg MCV1 Coverage %</span><span class="st">`</span>, <span class="st">"%"</span>),</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Avg Incidence per 1M</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">formatC</span>(<span class="st">`</span><span class="at">Avg Incidence per 1M</span><span class="st">`</span>, <span class="at">format =</span> <span class="st">"f"</span>, <span class="at">digits =</span> <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average MCV1 Vaccination Coverage and Measles Incidence Rate by WHO Region years (2012–2024)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"Regional Statistics"</span>,</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">Avg MCV1 Coverage %</span><span class="st">`</span>,<span class="st">`</span><span class="at">Avg MCV2 Coverage %</span><span class="st">`</span>, <span class="st">`</span><span class="at">Avg Incidence per 1M</span><span class="st">`</span>)) <span class="sc">|&gt;</span>  <span class="fu">tab_options</span>(</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.font.weight =</span> <span class="st">"bold"</span>,</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.background.color =</span> <span class="st">"#2C7BB6"</span>,</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.background.color =</span> <span class="st">"#D9EAF7"</span>,</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">row.striping.background_color =</span> <span class="st">"#F0F7FF"</span>,</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">row.striping.include_table_body =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_title</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#D9EAF7"</span>),</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_column_spanners</span>())</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>Regional_Summaries</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="tuqysjavqp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#tuqysjavqp table {
+<div id="txhoscuzzk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#txhoscuzzk table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#tuqysjavqp thead, #tuqysjavqp tbody, #tuqysjavqp tfoot, #tuqysjavqp tr, #tuqysjavqp td, #tuqysjavqp th {
+#txhoscuzzk thead, #txhoscuzzk tbody, #txhoscuzzk tfoot, #txhoscuzzk tr, #txhoscuzzk td, #txhoscuzzk th {
   border-style: none;
 }
 
-#tuqysjavqp p {
+#txhoscuzzk p {
   margin: 0;
   padding: 0;
 }
 
-#tuqysjavqp .gt_table {
+#txhoscuzzk .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -218,12 +219,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#tuqysjavqp .gt_caption {
+#txhoscuzzk .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#tuqysjavqp .gt_title {
+#txhoscuzzk .gt_title {
   color: #FFFFFF;
   font-size: 125%;
   font-weight: initial;
@@ -235,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#tuqysjavqp .gt_subtitle {
+#txhoscuzzk .gt_subtitle {
   color: #FFFFFF;
   font-size: 85%;
   font-weight: initial;
@@ -247,7 +248,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#tuqysjavqp .gt_heading {
+#txhoscuzzk .gt_heading {
   background-color: #2C7BB6;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -259,13 +260,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tuqysjavqp .gt_bottom_border {
+#txhoscuzzk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#tuqysjavqp .gt_col_headings {
+#txhoscuzzk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -280,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tuqysjavqp .gt_col_heading {
+#txhoscuzzk .gt_col_heading {
   color: #333333;
   background-color: #D9EAF7;
   font-size: 100%;
@@ -300,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#tuqysjavqp .gt_column_spanner_outer {
+#txhoscuzzk .gt_column_spanner_outer {
   color: #333333;
   background-color: #D9EAF7;
   font-size: 100%;
@@ -312,15 +313,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#tuqysjavqp .gt_column_spanner_outer:first-child {
+#txhoscuzzk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#tuqysjavqp .gt_column_spanner_outer:last-child {
+#txhoscuzzk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#tuqysjavqp .gt_column_spanner {
+#txhoscuzzk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -332,11 +333,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#tuqysjavqp .gt_spanner_row {
+#txhoscuzzk .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#tuqysjavqp .gt_group_heading {
+#txhoscuzzk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -362,7 +363,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#tuqysjavqp .gt_empty_group_heading {
+#txhoscuzzk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -377,15 +378,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#tuqysjavqp .gt_from_md > :first-child {
+#txhoscuzzk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#tuqysjavqp .gt_from_md > :last-child {
+#txhoscuzzk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#tuqysjavqp .gt_row {
+#txhoscuzzk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -404,7 +405,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#tuqysjavqp .gt_stub {
+#txhoscuzzk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -417,7 +418,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tuqysjavqp .gt_stub_row_group {
+#txhoscuzzk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -431,15 +432,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#tuqysjavqp .gt_row_group_first td {
+#txhoscuzzk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#tuqysjavqp .gt_row_group_first th {
+#txhoscuzzk .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#tuqysjavqp .gt_summary_row {
+#txhoscuzzk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -449,16 +450,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tuqysjavqp .gt_first_summary_row {
+#txhoscuzzk .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#tuqysjavqp .gt_first_summary_row.thick {
+#txhoscuzzk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#tuqysjavqp .gt_last_summary_row {
+#txhoscuzzk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -468,7 +469,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#tuqysjavqp .gt_grand_summary_row {
+#txhoscuzzk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -478,7 +479,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tuqysjavqp .gt_first_grand_summary_row {
+#txhoscuzzk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -488,7 +489,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#tuqysjavqp .gt_last_grand_summary_row_top {
+#txhoscuzzk .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -498,11 +499,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#tuqysjavqp .gt_striped {
+#txhoscuzzk .gt_striped {
   background-color: #F0F7FF;
 }
 
-#tuqysjavqp .gt_table_body {
+#txhoscuzzk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -511,7 +512,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#tuqysjavqp .gt_footnotes {
+#txhoscuzzk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -525,7 +526,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tuqysjavqp .gt_footnote {
+#txhoscuzzk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -534,7 +535,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tuqysjavqp .gt_sourcenotes {
+#txhoscuzzk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -548,7 +549,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tuqysjavqp .gt_sourcenote {
+#txhoscuzzk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -556,98 +557,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tuqysjavqp .gt_left {
+#txhoscuzzk .gt_left {
   text-align: left;
 }
 
-#tuqysjavqp .gt_center {
+#txhoscuzzk .gt_center {
   text-align: center;
 }
 
-#tuqysjavqp .gt_right {
+#txhoscuzzk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#tuqysjavqp .gt_font_normal {
+#txhoscuzzk .gt_font_normal {
   font-weight: normal;
 }
 
-#tuqysjavqp .gt_font_bold {
+#txhoscuzzk .gt_font_bold {
   font-weight: bold;
 }
 
-#tuqysjavqp .gt_font_italic {
+#txhoscuzzk .gt_font_italic {
   font-style: italic;
 }
 
-#tuqysjavqp .gt_super {
+#txhoscuzzk .gt_super {
   font-size: 65%;
 }
 
-#tuqysjavqp .gt_footnote_marks {
+#txhoscuzzk .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#tuqysjavqp .gt_asterisk {
+#txhoscuzzk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#tuqysjavqp .gt_indent_1 {
+#txhoscuzzk .gt_indent_1 {
   text-indent: 5px;
 }
 
-#tuqysjavqp .gt_indent_2 {
+#txhoscuzzk .gt_indent_2 {
   text-indent: 10px;
 }
 
-#tuqysjavqp .gt_indent_3 {
+#txhoscuzzk .gt_indent_3 {
   text-indent: 15px;
 }
 
-#tuqysjavqp .gt_indent_4 {
+#txhoscuzzk .gt_indent_4 {
   text-indent: 20px;
 }
 
-#tuqysjavqp .gt_indent_5 {
+#txhoscuzzk .gt_indent_5 {
   text-indent: 25px;
 }
 
-#tuqysjavqp .katex-display {
+#txhoscuzzk .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#tuqysjavqp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#txhoscuzzk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
 
 <table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
 </colgroup>
 <thead>
 <tr class="gt_heading header">
-<td colspan="5" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="color: #FFFFFF; font-weight: bold">Average MCV1 Vaccination Coverage and Measles Incidence Rate by WHO Region years (2012–2024)</td>
+<td colspan="6" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="color: #FFFFFF; font-weight: bold">Average MCV1 Vaccination Coverage and Measles Incidence Rate by WHO Region years (2012–2024)</td>
 </tr>
 <tr class="gt_col_headings gt_spanner_row even">
 <th rowspan="2" id="Region" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Region</th>
 <th rowspan="2" id="Countries" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Countries</th>
 <th rowspan="2" id="Year-Range" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Year Range</th>
-<th colspan="2" id="Regional Statistics" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="background-color: #D9EAF7" scope="colgroup"><div class="gt_column_spanner">
+<th colspan="3" id="Regional Statistics" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="background-color: #D9EAF7" scope="colgroup"><div class="gt_column_spanner">
 Regional Statistics
 </div></th>
 </tr>
 <tr class="gt_col_headings header">
 <th id="Avg-MCV1-Coverage-%" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Avg MCV1 Coverage %</th>
+<th id="Avg-MCV2-Coverage-%" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Avg MCV2 Coverage %</th>
 <th id="Avg-Incidence-per-1M" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Avg Incidence per 1M</th>
 </tr>
 </thead>
@@ -657,6 +660,7 @@ Regional Statistics
 <td class="gt_row gt_right" headers="Countries">27</td>
 <td class="gt_row gt_left" headers="Year Range">2012–2024</td>
 <td class="gt_row gt_right" headers="Avg MCV1 Coverage %">92.9%</td>
+<td class="gt_row gt_right" headers="Avg MCV2 Coverage %">86.8</td>
 <td class="gt_row gt_right" headers="Avg Incidence per 1M">82.2</td>
 </tr>
 <tr class="even">
@@ -664,6 +668,7 @@ Regional Statistics
 <td class="gt_row gt_right gt_striped" headers="Countries">46</td>
 <td class="gt_row gt_left gt_striped" headers="Year Range">2012–2024</td>
 <td class="gt_row gt_right gt_striped" headers="Avg MCV1 Coverage %">69.3%</td>
+<td class="gt_row gt_right gt_striped" headers="Avg MCV2 Coverage %">28.3</td>
 <td class="gt_row gt_right gt_striped" headers="Avg Incidence per 1M">59.4</td>
 </tr>
 <tr class="odd">
@@ -671,6 +676,7 @@ Regional Statistics
 <td class="gt_row gt_right" headers="Countries">53</td>
 <td class="gt_row gt_left" headers="Year Range">2012–2024</td>
 <td class="gt_row gt_right" headers="Avg MCV1 Coverage %">94.4%</td>
+<td class="gt_row gt_right" headers="Avg MCV2 Coverage %">89.9</td>
 <td class="gt_row gt_right" headers="Avg Incidence per 1M">56.2</td>
 </tr>
 <tr class="even">
@@ -678,6 +684,7 @@ Regional Statistics
 <td class="gt_row gt_right gt_striped" headers="Countries">21</td>
 <td class="gt_row gt_left gt_striped" headers="Year Range">2012–2024</td>
 <td class="gt_row gt_right gt_striped" headers="Avg MCV1 Coverage %">80.3%</td>
+<td class="gt_row gt_right gt_striped" headers="Avg MCV2 Coverage %">70.1</td>
 <td class="gt_row gt_right gt_striped" headers="Avg Incidence per 1M">54.4</td>
 </tr>
 <tr class="odd">
@@ -685,6 +692,7 @@ Regional Statistics
 <td class="gt_row gt_right" headers="Countries">11</td>
 <td class="gt_row gt_left" headers="Year Range">2012–2024</td>
 <td class="gt_row gt_right" headers="Avg MCV1 Coverage %">90.5%</td>
+<td class="gt_row gt_right" headers="Avg MCV2 Coverage %">77.2</td>
 <td class="gt_row gt_right" headers="Avg Incidence per 1M">16.7</td>
 </tr>
 <tr class="even">
@@ -692,6 +700,7 @@ Regional Statistics
 <td class="gt_row gt_right gt_striped" headers="Countries">35</td>
 <td class="gt_row gt_left gt_striped" headers="Year Range">2014–2024</td>
 <td class="gt_row gt_right gt_striped" headers="Avg MCV1 Coverage %">88.2%</td>
+<td class="gt_row gt_right gt_striped" headers="Avg MCV2 Coverage %">76.8</td>
 <td class="gt_row gt_right gt_striped" headers="Avg Incidence per 1M">1.7</td>
 </tr>
 </tbody>
@@ -756,23 +765,23 @@ Regional Statistics
 <span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a> </span>
 <span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>European_Table_Data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="xbtjghlwea" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xbtjghlwea table {
+<div id="negikeyekx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#negikeyekx table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#xbtjghlwea thead, #xbtjghlwea tbody, #xbtjghlwea tfoot, #xbtjghlwea tr, #xbtjghlwea td, #xbtjghlwea th {
+#negikeyekx thead, #negikeyekx tbody, #negikeyekx tfoot, #negikeyekx tr, #negikeyekx td, #negikeyekx th {
   border-style: none;
 }
 
-#xbtjghlwea p {
+#negikeyekx p {
   margin: 0;
   padding: 0;
 }
 
-#xbtjghlwea .gt_table {
+#negikeyekx .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -798,12 +807,12 @@ Regional Statistics
   border-left-color: #D3D3D3;
 }
 
-#xbtjghlwea .gt_caption {
+#negikeyekx .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#xbtjghlwea .gt_title {
+#negikeyekx .gt_title {
   color: #FFFFFF;
   font-size: 125%;
   font-weight: initial;
@@ -815,7 +824,7 @@ Regional Statistics
   border-bottom-width: 0;
 }
 
-#xbtjghlwea .gt_subtitle {
+#negikeyekx .gt_subtitle {
   color: #FFFFFF;
   font-size: 85%;
   font-weight: initial;
@@ -827,7 +836,7 @@ Regional Statistics
   border-top-width: 0;
 }
 
-#xbtjghlwea .gt_heading {
+#negikeyekx .gt_heading {
   background-color: #1A7A4A;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -839,13 +848,13 @@ Regional Statistics
   border-right-color: #D3D3D3;
 }
 
-#xbtjghlwea .gt_bottom_border {
+#negikeyekx .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xbtjghlwea .gt_col_headings {
+#negikeyekx .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -860,7 +869,7 @@ Regional Statistics
   border-right-color: #D3D3D3;
 }
 
-#xbtjghlwea .gt_col_heading {
+#negikeyekx .gt_col_heading {
   color: #333333;
   background-color: #D4EDDA;
   font-size: 100%;
@@ -880,7 +889,7 @@ Regional Statistics
   overflow-x: hidden;
 }
 
-#xbtjghlwea .gt_column_spanner_outer {
+#negikeyekx .gt_column_spanner_outer {
   color: #333333;
   background-color: #D4EDDA;
   font-size: 100%;
@@ -892,15 +901,15 @@ Regional Statistics
   padding-right: 4px;
 }
 
-#xbtjghlwea .gt_column_spanner_outer:first-child {
+#negikeyekx .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xbtjghlwea .gt_column_spanner_outer:last-child {
+#negikeyekx .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xbtjghlwea .gt_column_spanner {
+#negikeyekx .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -912,11 +921,11 @@ Regional Statistics
   width: 100%;
 }
 
-#xbtjghlwea .gt_spanner_row {
+#negikeyekx .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#xbtjghlwea .gt_group_heading {
+#negikeyekx .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -942,7 +951,7 @@ Regional Statistics
   text-align: left;
 }
 
-#xbtjghlwea .gt_empty_group_heading {
+#negikeyekx .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -957,15 +966,15 @@ Regional Statistics
   vertical-align: middle;
 }
 
-#xbtjghlwea .gt_from_md > :first-child {
+#negikeyekx .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xbtjghlwea .gt_from_md > :last-child {
+#negikeyekx .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xbtjghlwea .gt_row {
+#negikeyekx .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -984,7 +993,7 @@ Regional Statistics
   overflow-x: hidden;
 }
 
-#xbtjghlwea .gt_stub {
+#negikeyekx .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -997,7 +1006,7 @@ Regional Statistics
   padding-right: 5px;
 }
 
-#xbtjghlwea .gt_stub_row_group {
+#negikeyekx .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1011,15 +1020,15 @@ Regional Statistics
   vertical-align: top;
 }
 
-#xbtjghlwea .gt_row_group_first td {
+#negikeyekx .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#xbtjghlwea .gt_row_group_first th {
+#negikeyekx .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#xbtjghlwea .gt_summary_row {
+#negikeyekx .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1029,16 +1038,16 @@ Regional Statistics
   padding-right: 5px;
 }
 
-#xbtjghlwea .gt_first_summary_row {
+#negikeyekx .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#xbtjghlwea .gt_first_summary_row.thick {
+#negikeyekx .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#xbtjghlwea .gt_last_summary_row {
+#negikeyekx .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1048,7 +1057,7 @@ Regional Statistics
   border-bottom-color: #D3D3D3;
 }
 
-#xbtjghlwea .gt_grand_summary_row {
+#negikeyekx .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1058,7 +1067,7 @@ Regional Statistics
   padding-right: 5px;
 }
 
-#xbtjghlwea .gt_first_grand_summary_row {
+#negikeyekx .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1068,7 +1077,7 @@ Regional Statistics
   border-top-color: #D3D3D3;
 }
 
-#xbtjghlwea .gt_last_grand_summary_row_top {
+#negikeyekx .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1078,11 +1087,11 @@ Regional Statistics
   border-bottom-color: #D3D3D3;
 }
 
-#xbtjghlwea .gt_striped {
+#negikeyekx .gt_striped {
   background-color: #F0FAF4;
 }
 
-#xbtjghlwea .gt_table_body {
+#negikeyekx .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1091,7 +1100,7 @@ Regional Statistics
   border-bottom-color: #D3D3D3;
 }
 
-#xbtjghlwea .gt_footnotes {
+#negikeyekx .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1105,7 +1114,7 @@ Regional Statistics
   border-right-color: #D3D3D3;
 }
 
-#xbtjghlwea .gt_footnote {
+#negikeyekx .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1114,7 +1123,7 @@ Regional Statistics
   padding-right: 5px;
 }
 
-#xbtjghlwea .gt_sourcenotes {
+#negikeyekx .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1128,7 +1137,7 @@ Regional Statistics
   border-right-color: #D3D3D3;
 }
 
-#xbtjghlwea .gt_sourcenote {
+#negikeyekx .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1136,72 +1145,72 @@ Regional Statistics
   padding-right: 5px;
 }
 
-#xbtjghlwea .gt_left {
+#negikeyekx .gt_left {
   text-align: left;
 }
 
-#xbtjghlwea .gt_center {
+#negikeyekx .gt_center {
   text-align: center;
 }
 
-#xbtjghlwea .gt_right {
+#negikeyekx .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xbtjghlwea .gt_font_normal {
+#negikeyekx .gt_font_normal {
   font-weight: normal;
 }
 
-#xbtjghlwea .gt_font_bold {
+#negikeyekx .gt_font_bold {
   font-weight: bold;
 }
 
-#xbtjghlwea .gt_font_italic {
+#negikeyekx .gt_font_italic {
   font-style: italic;
 }
 
-#xbtjghlwea .gt_super {
+#negikeyekx .gt_super {
   font-size: 65%;
 }
 
-#xbtjghlwea .gt_footnote_marks {
+#negikeyekx .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#xbtjghlwea .gt_asterisk {
+#negikeyekx .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#xbtjghlwea .gt_indent_1 {
+#negikeyekx .gt_indent_1 {
   text-indent: 5px;
 }
 
-#xbtjghlwea .gt_indent_2 {
+#negikeyekx .gt_indent_2 {
   text-indent: 10px;
 }
 
-#xbtjghlwea .gt_indent_3 {
+#negikeyekx .gt_indent_3 {
   text-indent: 15px;
 }
 
-#xbtjghlwea .gt_indent_4 {
+#negikeyekx .gt_indent_4 {
   text-indent: 20px;
 }
 
-#xbtjghlwea .gt_indent_5 {
+#negikeyekx .gt_indent_5 {
   text-indent: 25px;
 }
 
-#xbtjghlwea .katex-display {
+#negikeyekx .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#xbtjghlwea div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#negikeyekx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>

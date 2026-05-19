@@ -231,7 +231,7 @@ tibble(
 
 :::
 
-# Brazil — Climate & Measles Analysis
+# Brazil: Climate & Measles Analysis
 
 ## Row {height="20%"}
 

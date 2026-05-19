@@ -39,6 +39,7 @@ Regional_Vaccination <- function(r) {
       year_range = paste(min(year), max(year), 
                          sep = "–"),
       avg_mcv1_coverage = round(mean(COVERAGE_MCV1, na.rm = TRUE), 1),
+            avg_mcv2_coverage = round(mean(COVERAGE_MCV2, na.rm = TRUE), 1),
       avg_incidence_per_1M = round(
        mean(yearly_measles_incidence_rate_per_1000000_total_population,
              na.rm = TRUE), 1))
@@ -54,8 +55,8 @@ Regional_Summaries <- country_year |>
     "Countries" = n_countries,
     "Year Range" = year_range,
     "Avg MCV1 Coverage %" = avg_mcv1_coverage,
-    "Avg Incidence per 1M" = avg_incidence_per_1M
-  )|>
+    "Avg MCV2 Coverage %" = avg_mcv2_coverage,
+    "Avg Incidence per 1M" = avg_incidence_per_1M)|>
   mutate(`Avg MCV1 Coverage %`= paste0(`Avg MCV1 Coverage %`, "%"),
     `Avg Incidence per 1M` = formatC(`Avg Incidence per 1M`, format = "f", digits = 1)) |>
   gt() |>
@@ -63,7 +64,7 @@ Regional_Summaries <- country_year |>
     title = "Average MCV1 Vaccination Coverage and Measles Incidence Rate by WHO Region years (2012–2024)") |>
   tab_spanner(
     label = "Regional Statistics",
-    columns = c(`Avg MCV1 Coverage %`, `Avg Incidence per 1M`)) |>  tab_options(
+    columns = c(`Avg MCV1 Coverage %`,`Avg MCV2 Coverage %`, `Avg Incidence per 1M`)) |>  tab_options(
     column_labels.font.weight = "bold",
     heading.background.color = "#2C7BB6",
     column_labels.background.color = "#D9EAF7",

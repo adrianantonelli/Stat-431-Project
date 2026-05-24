@@ -4,7 +4,7 @@ author: "Sebastien Montgrain, Adrian Antonelli, William Cuthbert"
 format:
   dashboard:
     theme: journal
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/WHO_Logo.png/320px-WHO_Logo.png"
+    logo: who-logo-png-transparent.png
     nav-buttons:
       - icon: linkedin
         href: https://www.linkedin.com
